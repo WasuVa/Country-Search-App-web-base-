@@ -4,25 +4,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Country Search Panel</title>
+    <title>Country Search Explorer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
-    <h1>Country Search Panel</h1>
-    <input type="text" id="country-input" placeholder="Type a country name...">
-    <button id="search-button" onclick="searchcon()">Search</button>
-    <div id="results">
-        <div id="country-name"></div>
-        <div id="country-info"></div>
-        <div id="country-population"></div>
-        <div id="country-flag"></div>
-        <div id="country-capital"></div>
-        <div class="google-map">
-            <div class="google-map"></div>
+    <div class="container">
+        <header>
+            <h1>Country Explorer</h1>
+            <p>Discover information about countries around the world</p>
+        </header>
+        <div class="search-box">
+            <input 
+                type="text" 
+                id="country-input" 
+                placeholder="Enter a country name..." 
+                autocomplete="off"
+            >
+            <button id="search-button" onclick="searchcon()">Search</button>
+        </div>
+        <div class="content">
+            <div class="info-section">
+                <div class="country-card">
+                    <h2>Country</h2>
+                    <p id="country-name">Search to begin...</p>
+                </div>
+                <div class="country-card">
+                    <h2>Region</h2>
+                    <p id="country-info">-</p>
+                </div>
+                <div class="country-card">
+                    <h2>Population</h2>
+                    <p id="country-population">-</p>
+                </div>
+                <div class="country-card">
+                    <h2>Capital</h2>
+                    <p id="country-capital">-</p>
+                </div>
+            </div>
+            <div class="flag-section">
+                <div id="country-flag">
+                    <p style="color: #bbb; font-size: 4em;">FLAG</p>
+                </div>
+            </div>
+            <div class="map-section" id="mapVIEW"></div>
         </div>
     </div>
-
     <script src="app.js"></script>
 </body>
 </html>
