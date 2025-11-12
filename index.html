@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Country Search Panel</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <h1>Country Search Panel</h1>
     <input type="text" id="country-input" placeholder="Type a country name...">
-    <button id="search-button" onclick="searchcon()">Search</button>  
+    <button id="search-button" onclick="searchcon()">Search</button>
     <div id="results">
         <div id="country-name"></div>
         <div id="country-info"></div>
         <div id="country-population"></div>
         <div id="country-flag"></div>
         <div id="country-capital"></div>
+        <div class="google-map">
+            <div class="google-map"></div>
+        </div>
     </div>
-    
+
     <script src="app.js"></script>
 </body>
 </html>
