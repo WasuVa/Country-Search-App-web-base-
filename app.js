@@ -18,6 +18,7 @@ function searchcon() {
         document.getElementById('country-capital').innerText = country.capital ? country.capital[0] : 'N/A';
         
         document.getElementById('country-flag').innerHTML = `<img src="${country.flags.png}" alt="Flag of ${country.name.common}"></img>`;
+        document.getElementById('coat').innerHTML =`<img width="210px" height="auto" src="${country.coatOfArms.png}" alt="Coat of Arms of ${country.name.common}"></img>`;
         
         const lat = country.latlng[0];
         const lng = country.latlng[1];

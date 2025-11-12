@@ -15,12 +15,7 @@
             <p>Discover information about countries around the world</p>
         </header>
         <div class="search-box">
-            <input 
-                type="text" 
-                id="country-input" 
-                placeholder="Enter a country name..." 
-                autocomplete="off"
-            >
+            <input type="text" id="country-input" placeholder="Enter a country name..." autocomplete="off">
             <button id="search-button" onclick="searchcon()">Search</button>
         </div>
         <div class="content">
@@ -46,10 +41,15 @@
                 <div id="country-flag">
                     <p style="color: #bbb; font-size: 4em;">FLAG</p>
                 </div>
+                <div class="country-card" id="coat">
+                    <h2>coatOfArm</h2>
+                    <p id="country-population">-</p>
+                </div>
             </div>
             <div class="map-section" id="mapVIEW"></div>
         </div>
     </div>
     <script src="app.js"></script>
 </body>
+
 </html>
