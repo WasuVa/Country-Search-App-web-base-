@@ -4,8 +4,10 @@ let timeIntervalId = null;
 
 // ==================== THEME TOGGLE FUNCTIONALITY ====================
 function initTheme() {
+    // Prevent transitions on page load
     document.body.classList.add('preload');
 
+    // Check for saved theme preference or default to 'light'
     const currentTheme = localStorage.getItem('theme') || 'light';
     const themeToggle = document.getElementById('theme-toggle');
     const themeIcon = themeToggle?.querySelector('.theme-icon');
@@ -17,6 +19,7 @@ function initTheme() {
         if (themeIcon) themeIcon.textContent = '🌙';
     }
 
+    // Remove preload class after a brief delay
     setTimeout(() => {
         document.body.classList.remove('preload');
     }, 100);
@@ -29,16 +32,19 @@ function toggleTheme() {
 
     body.classList.toggle('dark-theme');
 
+    // Update icon
     if (body.classList.contains('dark-theme')) {
         if (themeIcon) themeIcon.textContent = '☀️';
         localStorage.setItem('theme', 'dark');
 
+        // Add pulse animation
         themeToggle?.classList.add('pulse');
         setTimeout(() => themeToggle?.classList.remove('pulse'), 300);
     } else {
         if (themeIcon) themeIcon.textContent = '🌙';
         localStorage.setItem('theme', 'light');
-        
+
+        // Add pulse animation
         themeToggle?.classList.add('pulse');
         setTimeout(() => themeToggle?.classList.remove('pulse'), 300);
     }
@@ -46,6 +52,7 @@ function toggleTheme() {
 
 // ==================== NAVIGATION FUNCTIONALITY ====================
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize theme
     initTheme();
 
     const hamburger = document.getElementById('hamburger');
@@ -54,10 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const navbar = document.querySelector('.navbar');
     const themeToggle = document.getElementById('theme-toggle');
 
+    // Theme toggle event listener
     if (themeToggle) {
         themeToggle.addEventListener('click', toggleTheme);
     }
 
+    // Hamburger menu toggle
     if (hamburger) {
         hamburger.addEventListener('click', () => {
             hamburger.classList.toggle('active');
@@ -65,16 +74,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Close mobile menu when clicking nav links
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             hamburger?.classList.remove('active');
             navMenu?.classList.remove('mobile-active');
 
+            // Update active state
             navLinks.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
         });
     });
 
+    // Navbar scroll effect
     window.addEventListener('scroll', () => {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
@@ -83,6 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -96,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Country input event listener
     const countryInput = document.getElementById('country-input');
     if (countryInput) {
         countryInput.addEventListener('keypress', (e) => {
@@ -103,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Weather input event listener
     const weatherInput = document.getElementById('weather-input');
     if (weatherInput) {
         weatherInput.addEventListener('keypress', (e) => {
@@ -116,12 +131,7 @@ function searchcon() {
     const countryInput = document.getElementById('country-input').value;
 
     if (!countryInput.trim()) {
-        Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Please enter a country name!",
-            // footer: '<a href="#">Why do I have this issue?</a>'
-        });
+        alert("Please enter a country name!");
         return;
     }
 
@@ -133,11 +143,13 @@ function searchcon() {
                 .then(restData => {
                     const country = restData[0];
 
+                    // Update country information
                     document.getElementById('country-name').innerText = country.name.common;
                     document.getElementById('country-info').innerText = country.region || 'N/A';
                     document.getElementById('country-population').innerText = country.population.toLocaleString();
                     document.getElementById('country-capital').innerText = country.capital ? country.capital[0] : 'N/A';
 
+                    // Update flags and coat of arms
                     document.getElementById('country-flag').innerHTML = `<img src="${country.flags.png}" alt="Flag of ${country.name.common}">`;
 
                     if (country.coatOfArms && country.coatOfArms.png) {
@@ -149,6 +161,7 @@ function searchcon() {
                     document.getElementById('country-currency').innerHTML = country.currencies ? Object.values(country.currencies).map(c => `${c.name} (${c.symbol})`).join(', ') : 'N/A';
                     document.getElementById('country-languages').innerText = country.languages ? Object.values(country.languages).join(', ') : 'N/A';
 
+                    // Update map
                     const lat = country.latlng[0];
                     const lng = country.latlng[1];
                     const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng - 5},${lat - 5},${lng + 5},${lat + 5}&layer=mapnik&marker=${lat},${lng}`;
@@ -158,6 +171,7 @@ function searchcon() {
                         mapContainer.innerHTML = `<iframe width="100%" height="100%" frameborder="0" style="border-radius: 12px; border: none;" src="${mapUrl}"></iframe>`;
                     }
 
+                    // Update timezone and time
                     let tzSource = null;
                     if (weatherData && weatherData.location && weatherData.location.tz_id) {
                         tzSource = weatherData.location.tz_id;
@@ -222,20 +236,25 @@ function searchWeather() {
         .then(data => {
             console.log('Weather data:', data); // Debug log
 
+            // Location
             document.getElementById('weather-location').innerText = `${data.location.name}, ${data.location.country}`;
             document.getElementById('weather-updated').innerText = `Last updated: ${formatDateTime(data.current.last_updated)}`;
 
+            // Main temperature display
             document.getElementById('weather-temp').innerText = `${Math.round(data.current.temp_c)}°`;
 
+            // Weather condition and icon
             document.getElementById('weather-condition').innerText = data.current.condition.text;
             const iconElement = document.getElementById('weather-icon');
             iconElement.innerHTML = `<img src="https:${data.current.condition.icon}" alt="${data.current.condition.text}">`;
 
+            // Feels like temperature - fix the duplicate ID issue
             const feelsLikeElement = document.getElementById('weather-feels');
             if (feelsLikeElement) {
                 feelsLikeElement.innerHTML = `<p>Feels like</p><h3>${Math.round(data.current.feelslike_c)}°</h3>`;
             }
 
+            // Weather details
             document.getElementById('weather-humidity').innerText = `${data.current.humidity}%`;
             document.getElementById('weather-wind').innerText = `${data.current.wind_kph} km/h`;
             document.getElementById('weather-pressure').innerText = `${data.current.pressure_mb} mb`;
@@ -243,6 +262,7 @@ function searchWeather() {
             document.getElementById('weather-visibility').innerText = `${data.current.vis_km} km`;
             document.getElementById('weather-cloud').innerText = `${data.current.cloud}%`;
 
+            // Air Quality Index
             const aqiElement = document.getElementById('weather-air-quality');
             if (data.current.air_quality && data.current.air_quality['us-epa-index']) {
                 const aqi = data.current.air_quality['us-epa-index'];
@@ -251,9 +271,11 @@ function searchWeather() {
                 aqiElement.innerText = 'Not available';
             }
 
+            // Local time
             const sunTimesElement = document.getElementById('weather-sun-times');
             sunTimesElement.innerText = formatTime(data.location.localtime);
 
+            // Add success animation
             const weatherResults = document.getElementById('weather-results');
             if (weatherResults) {
                 weatherResults.classList.add('fade-in');
@@ -278,6 +300,7 @@ function searchWeather() {
 function changeWeatherBackground(condition, isDay) {
     const weatherSection = document.getElementById('weather-section');
 
+    // Remove all weather background classes
     const weatherClasses = [
         'weather-bg-clear',
         'weather-bg-clouds',
@@ -293,6 +316,7 @@ function changeWeatherBackground(condition, isDay) {
 
     const conditionLower = condition.toLowerCase();
 
+    // Determine background based on condition and time of day
     if (conditionLower.includes('thunder') || conditionLower.includes('storm')) {
         weatherSection.classList.add('weather-bg-thunderstorm');
     }
@@ -320,7 +344,7 @@ function changeWeatherBackground(condition, isDay) {
         }
     }
     else {
-
+        // Default background based on time of day
         if (isDay === 0) {
             weatherSection.classList.add('weather-bg-night-clear');
         } else {
