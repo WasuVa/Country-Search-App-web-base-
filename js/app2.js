@@ -41,10 +41,8 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
         el('country-independent').innerText = (typeof country.independent === 'boolean') ? (country.independent ? 'Yes' : 'No') : 'Unknown';
         el('country-un').innerText = (typeof country.unMember === 'boolean') ? (country.unMember ? 'Yes' : 'No') : 'Unknown';
 
-        // Flag
         el('country-flag').innerHTML = country.flags?.png ? `<img src="${country.flags.png}" alt="Flag of ${country.name?.common || ''}">` : 'No flag';
 
-        // Coat of arms
         const coatEl = el('country-coat');
         if (country.coatOfArms?.png) {
             coatEl.innerHTML = `<img src="${country.coatOfArms.png}" alt="Coat of arms of ${country.name?.common || ''}">`;
@@ -54,7 +52,6 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
             coatEl.innerText = 'No coat of arms available';
         }
 
-        // Links
         const wikiEl = el('country-wiki');
         const mapsEl = el('country-maps');
         if (country.maps?.openStreetMaps) {
@@ -69,15 +66,12 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
         }
 
         if (country.name?.common) {
-            // try to link to Wikipedia (simple heuristic)
             const wikiUrl = `https://en.wikipedia.org/wiki/${encodeURIComponent(country.name.common.replace(/\s+/g, '_'))}`;
             wikiEl.href = wikiUrl;
             wikiEl.style.display = 'inline-block';
         } else {
             wikiEl.style.display = 'none';
         }
-
-        // Map iframe
         const lat = country.latlng?.[0];
         const lng = country.latlng?.[1];
         const mapEl = document.querySelector('.google-map');
@@ -88,9 +82,9 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
             if (mapEl) mapEl.innerHTML = 'Map not available';
         }
 
-        // Live local time for the country's primary timezone
+        
         const localTimeEl = el('Time');
-        // clear any previous interval
+
         if (_countryTimeInterval) {
             clearInterval(_countryTimeInterval);
             _countryTimeInterval = null;
@@ -98,10 +92,10 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
 
         const startLiveTime = tzString => {
             if (!localTimeEl) return;
-            // choose formatter depending on availability
+
             const fmtOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
 
-            // If tzString looks like an IANA timezone (contains '/'), use Intl with timeZone
+
             if (typeof tzString === 'string' && tzString.includes('/')) {
                 try {
                     const formatter = new Intl.DateTimeFormat(undefined, { ...fmtOptions, timeZone: tzString });
@@ -111,12 +105,9 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
                     }, 1000);
                     return;
                 } catch (e) {
-                    // fall back to offset parsing below
                     console.warn('Invalid IANA timezone, falling back to offset parse:', tzString, e);
                 }
             }
-
-            // Parse 'UTC±HH:MM' style strings (allow both ASCII '-' and unicode '−')
             const parseUTCOffset = s => {
                 if (!s || typeof s !== 'string') return null;
                 const cleaned = s.replace('\u2212', '-'); // replace unicode minus if present
@@ -130,12 +121,10 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
 
             const offsetMinutes = parseUTCOffset(tzString);
             if (offsetMinutes == null) {
-                // if no parse possible, show the raw timezone string
                 localTimeEl.innerText = tzString || 'N/A';
                 return;
             }
 
-            // show live time based on offset from UTC
             const updateByOffset = () => {
                 const now = new Date();
                 const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
@@ -147,7 +136,6 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
             _countryTimeInterval = setInterval(updateByOffset, 1000);
         };
 
-        // Use the first timezone listed (if any)
         const primaryTz = (country.timezones && country.timezones[0]) || null;
         if (primaryTz) {
             startLiveTime(primaryTz);
@@ -155,7 +143,6 @@ fetch(`https://restcountries.com/v3.1/name/${encodeURIComponent(input)}`)
             localTimeEl.innerText = 'N/A';
         }
 
-        // Last updated
         const updatedEl = el('last-updated');
         if (updatedEl) updatedEl.innerText = `Last updated: ${new Date().toLocaleString()}`;
     })
